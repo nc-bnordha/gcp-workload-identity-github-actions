@@ -8,6 +8,11 @@ resource "google_project_service" "run" {
   service = "run.googleapis.com"
 }
 
+resource "google_project_service" "cloudresourcemanager" {
+  project = var.project_id
+  service = "cloudresourcemanager.googleapis.com"
+}
+
 resource "google_iam_workload_identity_pool" "this" {
   display_name              = "GitHub pool"
   workload_identity_pool_id = "github-pool"
@@ -34,6 +39,7 @@ resource "google_iam_workload_identity_pool_provider" "this" {
 resource "google_service_account" "this" {
   account_id   = "github-sa"
   display_name = "GITHub Service Account"
+  depends_on = [google_project_service.iam, google_project_service.cloudresourcemanager]
 }
 
 resource "google_service_account_iam_binding" "this" {
