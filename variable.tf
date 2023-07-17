@@ -12,3 +12,8 @@ variable "template_file" {
   type = string
   default = "workflow.tpl"
 }
+
+variable "service_account" {
+  type = string
+  default = "github-sa"
+}

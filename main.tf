@@ -16,7 +16,7 @@ resource "google_project_service" "cloudresourcemanager" {
 resource "google_iam_workload_identity_pool" "this" {
   display_name              = "GitHub pool"
   workload_identity_pool_id = "github-pool"
-
+  depends_on = [google_project_service.iam, google_project_service.cloudresourcemanager]
 }
 
 resource "google_iam_workload_identity_pool_provider" "this" {
@@ -37,7 +37,7 @@ resource "google_iam_workload_identity_pool_provider" "this" {
 }
 
 resource "google_service_account" "this" {
-  account_id   = "github-sa"
+  account_id   = var.service_account
   display_name = "GITHub Service Account"
   depends_on = [google_project_service.iam, google_project_service.cloudresourcemanager]
 }
@@ -58,9 +58,9 @@ resource "google_project_iam_member" "this" {
   member  = "serviceAccount:${google_service_account.this.email}"
 }
 
-resource "google_project_iam_member" "run_admin" {
-  project = var.project_id
-  role    = "roles/run.admin"
-  member  = "serviceAccount:${google_service_account.this.email}"
-}
+# resource "google_project_iam_member" "run_admin" {
+#   project = var.project_id
+#   role    = "roles/run.admin"
+#   member  = "serviceAccount:${google_service_account.this.email}"
+# }
 
